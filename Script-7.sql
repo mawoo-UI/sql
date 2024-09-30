@@ -1,0 +1,141 @@
+SELECT STUDNO, NAME ,STUDENT.DEPTNO D1,DEPARTMENT.DEPTNO D2,DNAME 
+FROM SAMPLE.STUDENT ,DEPARTMENT
+WHERE STUDENT.DEPTNO <>DEPARTMENT.DEPTNO;
+
+-- 학생 16명
+--	학과 7개
+
+--카티션 프로덕트
+SELECT  COUNT(*) FROM DEPARTMENT d; 
+
+SELECT STUDNO , NAME, S.DEPTNO , DNAME 
+FROM STUDENT s , DEPARTMENT d 
+WHERE  S.DEPTNO  = D.DEPTNO;
+
+--전인하 학생의 학번, 이름, 학과이름, 학과위치를 조회
+SELECT STUDNO ,NAME 
+FROM STUDENT s 
+WHERE NAME = '전인하';
+
+SELECT STUDNO, NAME, DNAME, LOC
+FROM STUDENT s, DEPARTMENT d 
+WHERE NAME = '전인하' AND S.DEPTNO  = D.DEPTNO;
+
+SELECT *
+FROM DEPARTMENT d ;
+
+--몸무게가 80KG 이상인 학생의 학번, 이름, 체중,학과이름,학과위치 조회
+
+SELECT STUDNO ,NAME ,WEIGHT ,DNAME ,LOC 
+FROM STUDENT s ,DEPARTMENT d 
+WHERE WEIGHT >= 80 AND  S.DEPTNO  = D.DEPTNO ;
+
+
+--1호관 소속 학생의 학번, 이름, 학과이름 조회
+SELECT STUDNO, NAME , DNAME,LOC
+FROM DEPARTMENT d, STUDENT s  
+WHERE LOC= '1호관' AND D.DEPTNO = S.DEPTNO ;
+
+
+
+-- ANSI 99 (SQL 표준)
+SELECT STUDNO ,NAME ,DNAME 
+FROM DEPARTMENT d 
+ CROSS JOIN STUDENT s 
+WHERE LOC = '1호관';
+
+
+--자연조인을 사용하여 학번,이름, 학과번호, 학과이름 조회
+SELECT STUDNO, NAME, DNAME , DEPTNO 
+FROM STUDENT s 
+NATURAL JOIN DEPARTMENT d ;
+-- 네츄럴 조인으로 동등연산을 통해서 하나로 합치기에 S.DEPTNO같은부분을 셀렉트에 선언 못하게함
+
+
+SELECT * 
+FROM STUDENT s 
+NATURAL JOIN DEPARTMENT d ;
+
+SELECT *
+FROM STUDENT s , DEPARTMENT d 
+WHERE  S.DEPTNO  = D.DEPTNO ;
+
+--JOIN ~ USING, JOIN ~ON
+SELECT *
+FROM STUDENT s 
+JOIN DEPARTMENT d USING(DEPTNO);
+
+SELECT S.DEPTNO 
+FROM STUDENT s 
+JOIN DEPARTMENT d ON S.DEPTNO  = D.DEPTNO ;
+                                                                                                                                                                                                                                                                                                                                                                                                                            
+SELECT PROFNO,NAME, SAL, GRADE
+FROM PROFESSOR , SALGRADE 
+WHERE SAL BETWEEN LOSAL AND HISAL;
+
+SELECT PROFNO, NAME, SAL, GRADE
+FROM PROFESSOR p 
+JOIN SALGRADE s 
+ON SAL >= LOSAL AND SAL <=HISAL
+
+SELECT *FROM STUDENT;
+
+--학번, 이름, 교수번호, 담당교수이름 조회 //FROM에 되어있는곳에 가중치
+--STUDENT PROFNO, NAME, DEPTNO
+-- PROFESSOR PROFNO,NAME,DEPRNO
+SELECT STUDNO, S.NAME, PROFNO , P.NAME
+FROM PROFESSOR p 
+FULL JOIN STUDENT s USING(PROFNO)
+ORDER BY STUDNO, PROFNO;
+
+
+--(+)하나만 사용가능
+SELECT *
+FROM STUDENT s ,PROFESSOR p 
+WHERE S.PROFNO(+) =P.PROFNO;
+
+--탄생 월별 학생 숫자 구하기
+SELECT M, NVL(CNT,0) CMT 
+FROM (
+SELECT TO_CHAR(BIRTHDATE,'MM') M, COUNT(*) CNT  
+FROM STUDENT s 
+GROUP BY TO_CHAR(BIRTHDATE,'MM') 
+) A
+RIGHT JOIN (
+SELECT LTRIM(TO_CHAR(ROWNUM, '00')) M
+FROM STUDENT s
+WHERE ROWNUM <= 12
+) B USING (M)
+ORDER BY 1;
+
+--DEPARTMENT를 대상으로 부서 이름과 상위부서이름을 조회
+
+SELECT *FROM DEPARTMENT d;
+
+
+SELECT D.DNAME || '의 소속학과는'|| NVL(D2.DNAME, D2.DNAME || '입니다', '없습니다')
+FROM DEPARTMENT d 
+LEFT JOIN DEPARTMENT d2 ON D.COLLEGE=D2.DEPTNO ; 
+
+SELECT 
+STUDNO , 
+MAME , 
+DEPTNO ,
+(SELECT DNAME FOR DEPATMENTD. WHERE D.WHERE D.DEPTNO = S.DEPTNO) DNAME,
+(SELECT NAME FROM PROFESSOR p WHERE.P PROFNO = S.PROFNO) PNAME
+FROM STUDENT S;
+
+
+
+
+--학생의 학번, 이름, 담당교수의 교수번호, 교수이름, 학생의소속학과 이름을 조회
+--단 모든 학생의 정보를 조회
+
+SELECT STUDNO, S.NAME , PROFNO, P.NAME, DNAME
+--SELECT *
+FROM  STUDENT s
+NATURAL JOIN DEPARTMENT d;
+LEFT JOIN PROFESSOR p USING(PROFNO);
+
+
+--서브 쿼리
